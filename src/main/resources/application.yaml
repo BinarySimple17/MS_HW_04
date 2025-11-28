@@ -37,6 +37,9 @@ logging:
     ru.binarysimple: INFO
     org.hibernate.SQL: DEBUG
     org.hibernate.orm.jdbc.bind: TRACE
+    org.springframework.web: DEBUG
+    org.springdoc: DEBUG
+    io.swagger: DEBUG
 
 management:
   endpoints:
@@ -50,3 +53,16 @@ management:
 info:
   app:
     name: "Users Service"
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+  info:
+    title: Users Service API
+    description: REST API for managing users
+    version: 1.0.0
+    contact:
+      name: Support Team
+      email: support@example.com

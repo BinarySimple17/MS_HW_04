@@ -37,6 +37,7 @@ dependencies {
 	implementation(libs.jakarta.validation.api)
 	implementation(libs.spring.boot.actuator)
 	implementation(libs.postgresql)
+	implementation(libs.springdoc.openapi.ui)
 	compileOnly(libs.lombok)
 	annotationProcessor(libs.lombok)
 	testImplementation(libs.junit.api)

@@ -1,26 +1,19 @@
 package ru.binarysimple.users.dto;
 
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Value;
-import ru.binarysimple.users.model.User;
 
 /**
- * DTO for {@link User}
+ * DTO for {@link ru.binarysimple.users.model.User}
  */
 @Value
-public class CreateUserDto {
-    @NotNull
+public class UserDto {
     @Size(max = 256)
-    @NotEmpty
     String username;
     String firstName;
     String lastName;
-    @NotNull
     @Email
-    @NotEmpty
     String email;
     String phone;
 }
