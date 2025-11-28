@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: users-service
+  labels:
+    app: users-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: users-service
+  template:
+    metadata:
+      labels:
+        app: users-service
+    spec:
+      containers:
+        - name: users-service
+          image: otusmicroservhw4-users-service:latest
+          imagePullPolicy: Never  # ✅ Критически важно для локальных образов
+#          image: users-service:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: kubernetes
+            - name: DATASOURCE_URL
+              value: jdbc:postgresql://postgres:5432/usersdb
+            - name: DATASOURCE_USERNAME
+              value: app_user
+            - name: DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: password
+            - name: SPRING_CONFIG_ADDITIONAL_LOCATION
+              value: file:/app/config/
+          volumeMounts:
+            - name: config-volume
+              mountPath: /app/config
+              readOnly: true
+          # Явно указываем путь к конфигурации
+          #command: [ "java", "-Dspring.config.location=classpath:/application.yaml,file:/app/config/", "-jar", "/app/app.jar" ]
+      volumes:
+        - name: config-volume
+          configMap:
+            name: users-service-config
+            items:
+              - key: application-kubernetes.yaml
+                path: application-kubernetes.yaml
