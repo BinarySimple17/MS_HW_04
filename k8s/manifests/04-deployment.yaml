@@ -16,8 +16,9 @@ spec:
     spec:
       containers:
         - name: users-service
-          image: otusmicroservhw4-users-service:latest
-          imagePullPolicy: Never  # ✅ Критически важно для локальных образов
+          image: binarysimple/simple-users-service:0.0.2
+#          image: otusmicroservhw4-users-service:latest
+#          imagePullPolicy: Never  # ✅ Критически важно для локальных образов
 #          image: users-service:latest
           ports:
             - containerPort: 8080
@@ -25,7 +26,7 @@ spec:
             - name: SPRING_PROFILES_ACTIVE
               value: kubernetes
             - name: DATASOURCE_URL
-              value: jdbc:postgresql://postgres:5432/usersdb
+              value: jdbc:postgresql://postgres-postgresql:5432/usersdb
             - name: DATASOURCE_USERNAME
               value: app_user
             - name: DATASOURCE_PASSWORD
@@ -39,8 +40,6 @@ spec:
             - name: config-volume
               mountPath: /app/config
               readOnly: true
-          # Явно указываем путь к конфигурации
-          #command: [ "java", "-Dspring.config.location=classpath:/application.yaml,file:/app/config/", "-jar", "/app/app.jar" ]
       volumes:
         - name: config-volume
           configMap:
