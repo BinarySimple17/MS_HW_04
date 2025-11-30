@@ -1,0 +1,51 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: db-migrate
+  labels:
+    app: users-service
+spec:
+  # Не перезапускаем при успехе, только при ошибках 4 раза
+  backoffLimit: 4
+  template:
+    metadata:
+      labels:
+        app: users-service
+        job: db-migrate
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: db-migrate
+          image: binarysimple/simple-users-service:0.0.3  # тот же образ
+          command: ["java"]
+          args:
+            - "-Dspring.profiles.active=job"
+            - "-Dspring.datasource.url=jdbc:postgresql://postgres-postgresql:5432/usersdb"
+            - "-Dspring.datasource.username=app_user"
+            - "-Dspring.datasource.password=$(DB_PASSWORD)"
+            - "-Dspring.liquibase.enabled=true"
+            - "-Dspring.liquibase.change-log=classpath:db/changelog/db.changelog-master.yaml"
+            - "-Dspring.main.web-application-type=none"  # чтобы не запускать веб-сервер
+            - "-jar"
+            - "/app/app.jar"
+          env:
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: password
+          tty: true #вкл терминал, чтобы видеть логи в stdout
+          stdin: false  # отключаем stdin
+          volumeMounts:
+            - name: config-volume
+              mountPath: /app/config
+              readOnly: true
+      volumes:
+        - name: config-volume
+          configMap:
+            name: users-service-config
+            items:
+              - key: application-job.yaml
+                path: application-job.yaml
+
+      terminationGracePeriodSeconds: 30 #время на завершение работы контейнера для отладки

@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: users-service
-          image: binarysimple/simple-users-service:0.0.2
+          image: binarysimple/simple-users-service:0.0.3
 #          image: otusmicroservhw4-users-service:latest
 #          imagePullPolicy: Never  # ✅ Критически важно для локальных образов
 #          image: users-service:latest
