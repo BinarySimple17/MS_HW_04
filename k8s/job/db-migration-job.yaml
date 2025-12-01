@@ -17,28 +17,29 @@ spec:
       containers:
         - name: db-migrate
           image: binarysimple/simple-users-service:0.0.3  # тот же образ
+          workingDir: /application  # здесь лежит app.jar
           command: ["java"]
           args:
             - "-Dspring.profiles.active=job"
-            - "-Dspring.datasource.url=jdbc:postgresql://postgres-postgresql:5432/usersdb"
-            - "-Dspring.datasource.username=app_user"
-            - "-Dspring.datasource.password=$(DB_PASSWORD)"
-            - "-Dspring.liquibase.enabled=true"
-            - "-Dspring.liquibase.change-log=classpath:db/changelog/db.changelog-master.yaml"
+            - "-Dspring.config.location=classpath:/;file:/application/config/"
             - "-Dspring.main.web-application-type=none"  # чтобы не запускать веб-сервер
+#            - "-Dlogging.level.org.springframework.boot.autoconfigure=DEBUG"
+#            - "-Dlogging.level.org.springframework.cloud=DEBUG"
             - "-jar"
-            - "/app/app.jar"
+            - "app.jar"
           env:
-            - name: DB_PASSWORD
+            - name: DATASOURCE_URL
+              value: jdbc:postgresql://postgres-postgresql:5432/usersdb
+            - name: DATASOURCE_USERNAME
+              value: app_user
+            - name: DATASOURCE_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: db-secret
                   key: password
-          tty: true #вкл терминал, чтобы видеть логи в stdout
-          stdin: false  # отключаем stdin
           volumeMounts:
             - name: config-volume
-              mountPath: /app/config
+              mountPath: /application/config
               readOnly: true
       volumes:
         - name: config-volume

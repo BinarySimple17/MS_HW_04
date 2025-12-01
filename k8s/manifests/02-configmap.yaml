@@ -6,9 +6,6 @@ metadata:
     app: users-service
 data:
   application-kubernetes.yaml: |
-    config:
-      activate:
-        on-profile: kubernetes    
     spring:
       datasource:
         url: ${DATASOURCE_URL}
@@ -18,28 +15,25 @@ data:
         hikari:
           maximum-pool-size: 10
           minimum-idle: 2
-
+    
       liquibase:
         enabled: false
-
-    springdoc:
-      api-docs:
-        path: /v3/api-docs
-      swagger-ui:
-        path: /swagger-ui.html
-      info:
-        title: Users Service API
-        version: 1.0.0
-        description: REST API for managing users
-        contact:
-          name: Support Team
-          email: support@example.com
+    
+      springdoc:
+        api-docs:
+          path: /v3/api-docs
+        swagger-ui:
+          path: /swagger-ui.html
+        info:
+          title: Users Service API
+          version: 1.0.0
+          description: REST API for managing users
+          contact:
+            name: Support Team
+            email: support@example.com
 
   application-job.yaml: |
-    config:
-      activate:
-        on-profile: job
-    
+    spring:
       datasource:
         url: ${DATASOURCE_URL}
         username: ${DATASOURCE_USERNAME}
@@ -48,7 +42,7 @@ data:
         hikari:
           maximum-pool-size: 10
           minimum-idle: 2
-        
+    
       liquibase:
         enabled: true
         change-log: classpath:db/changelog/db.changelog-master.yaml

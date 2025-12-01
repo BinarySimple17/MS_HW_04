@@ -28,10 +28,11 @@ ENV JAVA_HEAP_DUMP_OPTS="-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/tmp"
 ENV JAVA_ON_OUT_OF_MEMORY_OPTS="-XX:+ExitOnOutOfMemoryError"
 ENV JAVA_NATIVE_MEMORY_TRACKING_OPTS="-XX:NativeMemoryTracking=summary -XX:+UnlockDiagnosticVMOptions -XX:+PrintNMTStatistics"
 
-ENTRYPOINT java \
-    $JAVA_HEAP_DUMP_OPTS \
-    $JAVA_ON_OUT_OF_MEMORY_OPTS \
-    $JAVA_ERROR_FILE_OPTS \
-    $JAVA_NATIVE_MEMORY_TRACKING_OPTS \
-    $JAVA_CDS_OPTS \
-    -jar app.jar
+ENTRYPOINT ["java", "-jar", "app.jar"]
+# ENTRYPOINT java \
+#     $JAVA_HEAP_DUMP_OPTS \
+#     $JAVA_ON_OUT_OF_MEMORY_OPTS \
+#     $JAVA_ERROR_FILE_OPTS \
+#     $JAVA_NATIVE_MEMORY_TRACKING_OPTS \
+#     $JAVA_CDS_OPTS \
+#     -jar app.jar
