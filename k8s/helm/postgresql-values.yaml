@@ -1,6 +1,4 @@
 # values.yaml для PostgreSQL (bitnami/postgresql)
-#image:
-#  tag: "16"
 
 auth:
   enablePostgresPasswordRotation: false
@@ -12,18 +10,6 @@ auth:
   enablePostgresUser: true
 
 primary:
-#  initdbScripts:
-#    init-user-db.sql: |
-#      CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-#      -- Дополнительные настройки при необходимости
-
-#  resources:
-#    requests:
-#      memory: 256Mi
-#      cpu: 100m
-#    limits:
-#      memory: 512Mi
-#      cpu: 200m
 
   service:
     type: ClusterIP

@@ -1,14 +1,16 @@
+# Создается Service
+# Service слушает на порту 80 внутри кластера
+# Перенаправляет трафик на порт 8080 одного из подов
 apiVersion: v1
 kind: Service
 metadata:
   name: users-service
-  labels:
-    app: users-service
 spec:
   selector:
-    app: users-service
+    app: users-service # поды с этой меткой
   ports:
-    - protocol: TCP
-      port: 8080
-      targetPort: 8080
-  type: LoadBalancer  # NodePort
+    - name: http
+      protocol: TCP
+      port: 80 # Порт сервиса
+      targetPort: 8080 #Порт пода (8080)
+  type: ClusterIP

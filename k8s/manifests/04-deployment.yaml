@@ -40,6 +40,13 @@ spec:
             - name: config-volume
               mountPath: /app/config
               readOnly: true
+          livenessProbe: #Liveness проба
+            httpGet:
+              path: /actuator/health/
+              port: 8080
+            initialDelaySeconds: 45
+            periodSeconds: 10
+            timeoutSeconds: 5
       volumes:
         - name: config-volume
           configMap:

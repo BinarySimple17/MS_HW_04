@@ -3,7 +3,7 @@ kind: Job
 metadata:
   name: db-migrate
   labels:
-    app: users-service
+    app: db-migrate
 spec:
   # Не перезапускаем при успехе, только при ошибках 4 раза
   backoffLimit: 4
