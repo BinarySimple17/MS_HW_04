@@ -22,3 +22,29 @@
 
 ##### Задание со звездочкой:
 - Добавить шаблонизацию приложения в helm чартах
+
+### Решение
+```
+minikube start
+
+kubectl apply -f k8s/manifests/01-secret.yaml
+
+kubectl apply -f k8s/manifests/02-configmap.yaml
+
+kubectl create namespace ng
+
+helm install postgres oci://registry-1.docker.io/bitnamicharts/postgresql --namespace default --values k8s/helm/postgresql-values.yaml
+helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx/
+helm repo update
+helm install nginx ingress-nginx/ingress-nginx --namespace ng -f k8s/nginx-ingress.yaml
+
+kubectl apply -f k8s/job/db-migration-job.yaml
+
+kubectl apply -f k8s/manifests/04-deployment.yaml
+
+kubectl apply -f k8s/manifests/05-service.yaml
+
+kubectl apply -f k8s/manifests/06-ingress.yaml
+
+minikube tunnel
+```
