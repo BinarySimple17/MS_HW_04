@@ -3,23 +3,25 @@ kind: Deployment
 metadata:
   name: {{ .Values.app.name }}
   labels:
-    app: {{ .Values.app.name }}
+    # app: {{ .Values.app.name }}
+    {{- include "app.selectorLabels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ .Values.app.name }}
+      # app: {{ .Values.app.name }}
+      {{- include "app.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        app: {{ .Values.app.name }}
+        {{- include "app.selectorLabels" . | nindent 8 }}
     spec:
-      serviceAccountName: {{ .Release.Name }}-deps-checker  # ServiceAccount
+      # serviceAccountName: {{ .Release.Name }}-deps-checker  # ServiceAccount
 #---    
       initContainers:
         {{- if .Values.database.migration.enabled }}
         - name: wait-for-migration
-          image: postgres:15-alpine # Yes, I check in different ways, just because I can.
+          image: postgres:15-alpine # 
           command:                                # wait for postgres
             - sh
             - -c
