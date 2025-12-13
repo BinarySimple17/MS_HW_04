@@ -1,3 +1,4 @@
+{{- if .Values.database.migration.enabled }}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -27,8 +28,7 @@ spec:
 
       serviceAccountName: {{ .Release.Name }}-deps-checker  # ServiceAccount
       initContainers:
-        - name: wait-for-postgres
-          # image: {{ .Values.database.migration.waitImage | default "postgres:14-alpine" }}
+        - name: wait-for-postgres          
           image: registry.k8s.io/kubectl:v1.29.0  # Kubernetes image
           command:
               - kubectl
@@ -79,3 +79,4 @@ spec:
               - key: application-job.yaml
                 path: application-job.yaml
       terminationGracePeriodSeconds: {{ .Values.database.migration.gracePeriod | default 30 }}
+{{- end }}      

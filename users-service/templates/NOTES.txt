@@ -3,6 +3,7 @@
 {{- range $host := .Values.ingress.hosts }}
   {{- range .paths }}
   http{{ if $.Values.ingress.tls }}s{{ end }}://{{ $host.host }}{{ .path }}
+  http{{ if $.Values.ingress.tls }}s{{ end }}://{{ $host.host }}{{ .path }}/swagger-ui/index.html
   {{- end }}
 {{- end }}
 {{- else if contains "NodePort" .Values.service.type }}

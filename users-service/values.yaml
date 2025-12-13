@@ -15,7 +15,11 @@ app:
 
 service:
   type: ClusterIP
-  port: 8080
+  port: 80
+  targetPort: 8080
+  # nodePort: 30080  # NodePort/LoadBalancer (opt)
+  # loadBalancerIP: ""  # LoadBalancer (opt)
+  annotations: {}
 
 headlessService:
   enabled: false
@@ -23,6 +27,7 @@ headlessService:
 ingress:
   enabled: true
   className: "nginx"
+  labels: {}
   annotations: {}
   hosts:
     - host: arch.homework
@@ -40,7 +45,7 @@ autoscaling:
   hpa:
     enabled: false
     minReplicas: 1
-    maxReplicas: 100
+    maxReplicas: 5
     targetCPU: 80
     targetMemory: ""
 
