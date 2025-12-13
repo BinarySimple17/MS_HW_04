@@ -40,3 +40,4 @@ out/
 
 ##HELM##
 /users-service/charts/*.*
+/users-service/Chart.lock

@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import ru.binarysimple.users.dto.CreateUserDto;
 import ru.binarysimple.users.exception.EntityNotFoundException;
 import ru.binarysimple.users.filter.UserFilter;
 import ru.binarysimple.users.dto.UserDto;
@@ -51,8 +52,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto create(UserDto dto) {
-        User user = userMapper.toEntity(dto);
+    public UserDto create(CreateUserDto dto) {
+        User user = userMapper.toNewEntity(dto);
         User resultUser = userRepository.save(user);
         return userMapper.toUserDto(resultUser);
     }
