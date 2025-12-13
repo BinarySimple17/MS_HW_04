@@ -15,17 +15,23 @@ spec:
         app: {{ .Values.app.name }}
     spec:
       serviceAccountName: {{ .Release.Name }}-deps-checker  # ServiceAccount
+#---    
       initContainers:
         {{- if .Values.database.migration.enabled }}
         - name: wait-for-migration
-          image: registry.k8s.io/kubectl:v1.29.0  # Kubernetes image
-          command:                                # wait for job is finished. could it lead to a circular dependency job-deploy?
-              - kubectl
-              - wait
-              - --for=condition=complete
-              - job/{{ .Release.Name }}-db-migrate
-              - --timeout={{ .Values.database.migration.timeout }}s 
+          image: postgres:15-alpine # Yes, I check in different ways, just because I can.
+          command:                                # wait for postgres
+            - sh
+            - -c
+            - |            
+              echo "Checking PostgreSQL availability..."
+              until pg_isready -h {{ .Release.Name }}-postgresql -p 5432 -U app_user -d usersdb -t 30; do
+                echo "PostgreSQL not ready, waiting..."
+                sleep 2
+              done
+              echo "PostgreSQL is ready"
         {{- end }}     
+#---
       containers:
         - name: {{ .Values.app.name }}
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}

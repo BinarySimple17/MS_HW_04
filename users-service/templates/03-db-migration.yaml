@@ -10,11 +10,11 @@ metadata:
     heritage: {{ .Release.Service }}
     component: migration
   annotations:
-    {{- if .Values.database.migration.waitForPostgres }}
-    "helm.sh/hook": post-install,post-upgrade
-    "helm.sh/hook-weight": "10"
-    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
-    {{- end }}
+    # {{- if .Values.database.migration.waitForPostgres }}
+    # "helm.sh/hook": post-install,post-upgrade
+    # "helm.sh/hook-weight": "10"
+    # "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+    # {{- end }}
 spec:
   backoffLimit: {{ .Values.database.migration.backoffLimit | default 4 }}
   ttlSecondsAfterFinished: {{ .Values.database.migration.ttlSecondsAfterFinished | default 86400 }}
