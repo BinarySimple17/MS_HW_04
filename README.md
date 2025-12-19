@@ -28,8 +28,7 @@
 ```
 helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx/
 helm repo update
-kubectl create namespace ng
-helm install nginx ingress-nginx/ingress-nginx --namespace ng -f k8s/nginx-ingress.yaml
+helm install nginx ingress-nginx/ingress-nginx -f k8s/nginx-ingress.yaml -n ng --create-namespace
 ```
 
 Установка приложения
