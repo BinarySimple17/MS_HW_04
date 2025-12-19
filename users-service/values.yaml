@@ -59,16 +59,19 @@ metrics:
 
 serviceAccount:
   # Specifies whether a service account should be created
-  create: true
+  create: false
   # Automatically mount a ServiceAccount's API credentials?
   automount: true
   # Annotations to add to the service account
-  annotations: {}
+  annotations:
+    "helm.sh/hook": pre-install,pre-upgrade
+    "helm.sh/hook-weight": "0"
   # The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
   name: ""
 
-# Конфигурация базы данных - пароль в секрете
+# Конфигурация базы данных - пароль
+# да секреты должны поставляться отдельно, но сейчас наверное пойдет.
 database:
   createSecret: true
   secretName: db-secret
@@ -81,9 +84,10 @@ database:
   # Настройки миграции
   migration:
     enabled: true
+    restartPolicy: Never # Не перезапускать миграции #OnFailure
     waitForPostgres: true # Ждать готовности PostgreSQL
     timeout: 300 # Таймаут ожидания в секундах
-    backoffLimit: 4 # Количество попыток рестарта
+    backoffLimit: 0 # Количество попыток рестарта
     ttlSecondsAfterFinished: 120 # Автоудаление Job через 2 минуту
     gracePeriod: 30 # Время на graceful shutdown
     debug: false # Включить debug логирование

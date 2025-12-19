@@ -16,12 +16,12 @@ spec:
       labels:
         {{- include "app.selectorLabels" . | nindent 8 }}
     spec:
-      # serviceAccountName: {{ .Release.Name }}-deps-checker  # ServiceAccount
+#      serviceAccountName: {{ .Release.Name }}-deps-checker  # ServiceAccount
 #---    
       initContainers:
         {{- if .Values.database.migration.enabled }}
         - name: wait-for-migration
-          image: postgres:15-alpine # 
+          image: postgres:15-alpine #
           command:                                # wait for postgres
             - sh
             - -c
@@ -32,6 +32,9 @@ spec:
                 sleep 2
               done
               echo "PostgreSQL is ready"
+#              if kubectl get job users-release-db-migrate; then
+#                kubectl wait --for=condition=complete job/users-release-db-migrate --timeout=300s
+#              fi
         {{- end }}     
 #---
       containers:
