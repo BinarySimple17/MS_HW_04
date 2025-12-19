@@ -3,20 +3,17 @@ kind: Deployment
 metadata:
   name: {{ .Values.app.name }}
   labels:
-    # app: {{ .Values.app.name }}
     {{- include "app.selectorLabels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      # app: {{ .Values.app.name }}
       {{- include "app.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
         {{- include "app.selectorLabels" . | nindent 8 }}
     spec:
-#      serviceAccountName: {{ .Release.Name }}-deps-checker  # ServiceAccount
 #---    
       initContainers:
         {{- if .Values.database.migration.enabled }}
