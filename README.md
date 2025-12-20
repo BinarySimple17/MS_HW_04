@@ -48,4 +48,11 @@ newman run .\.postman\HW4.postman_collection.json --env-var "baseURL=http://arch
 ```
 [Postman коллекция HW4](./.postman/HW4.postman_collection.json)
 
+Удаление
+```
+helm uninstall users-release
+kubectl delete -f k8s/manifests/01-secret.yaml
+kubectl delete namespace ng
+```
+
 ![Clipboard_12-13-2025_01.png](./.img/Clipboard_12-13-2025_01.png)
