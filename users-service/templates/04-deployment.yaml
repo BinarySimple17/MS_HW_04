@@ -25,7 +25,10 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.postgresql.auth.existingSecret }}
                   key: {{ .Values.postgresql.auth.existingSecretPasswordKey }}
-          command:                                # wait for postgres
+          # wait for postgres
+          # проверяю применение определенной версии миграции. и не жду job вечно при увеличении реплик
+          # а может это вообще не нужно
+          command:
             - sh
             - -c
             - |            
@@ -35,7 +38,6 @@ spec:
                 sleep 2
               done
               echo "PostgreSQL is ready"
-# проверяю применение определенной версии миграции. и не жду job вечно при увеличении реплик
               echo "Checking if migration '{{ .Values.database.migration.changeVersion }}' is applied..."
               until psql -h {{ .Release.Name }}-postgresql \
                        -U {{ .Values.postgresql.auth.username }} \
