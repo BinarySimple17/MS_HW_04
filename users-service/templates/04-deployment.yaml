@@ -19,16 +19,32 @@ spec:
         {{- if .Values.database.migration.enabled }}
         - name: wait-for-migration
           image: postgres:15-alpine #
+          env:
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.postgresql.auth.existingSecret }}
+                  key: {{ .Values.postgresql.auth.existingSecretPasswordKey }}
           command:                                # wait for postgres
             - sh
             - -c
             - |            
               echo "Checking PostgreSQL availability..."
-              until pg_isready -h {{ .Release.Name }}-postgresql -p 5432 -U app_user -d usersdb -t 30; do
+              until pg_isready -h {{ .Release.Name }}-postgresql -p 5432 -U {{ .Values.postgresql.auth.username }} -d {{ .Values.postgresql.auth.database }} -t 30; do
                 echo "PostgreSQL not ready, waiting..."
                 sleep 2
               done
               echo "PostgreSQL is ready"
+# проверяю применение определенной версии миграции. и не жду job вечно при увеличении реплик
+              echo "Checking if migration '{{ .Values.database.migration.changeVersion }}' is applied..."
+              until psql -h {{ .Release.Name }}-postgresql \
+                       -U {{ .Values.postgresql.auth.username }} \
+                       -d {{ .Values.postgresql.auth.database }} \
+                       -tAc "SELECT 1 FROM databasechangelog WHERE filename LIKE '%{{ .Values.database.migration.changeVersion }}%';" | grep -q "1"; do
+                echo "Migration '{{ .Values.database.migration.changeVersion }}' not applied. Waiting..."
+                sleep 5
+              done
+              echo "Migration applied."
 #              if kubectl get job users-release-db-migrate; then
 #                kubectl wait --for=condition=complete job/users-release-db-migrate --timeout=300s
 #              fi
@@ -53,6 +69,9 @@ spec:
             - name: config-volume
               mountPath: /app/config
               readOnly: true
+            - name: db-secret
+              mountPath: /etc/secrets
+              readOnly: true
           livenessProbe:
             httpGet:
               path: {{ .Values.liveness.path }}
@@ -67,3 +86,6 @@ spec:
             items:
               - key: application-kubernetes.yaml
                 path: application-kubernetes.yaml
+        - name: db-secret
+          secret:
+            secretName: {{ .Values.database.secretName }}

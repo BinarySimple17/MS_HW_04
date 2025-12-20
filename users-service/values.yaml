@@ -58,25 +58,18 @@ metrics:
     scrapeTimeout: ""
 
 serviceAccount:
-  # Specifies whether a service account should be created
-  create: false
-  # Automatically mount a ServiceAccount's API credentials?
+  create: false   #ьеперь не нужен пока
   automount: true
-  # Annotations to add to the service account
   annotations:
     "helm.sh/hook": pre-install,pre-upgrade
     "helm.sh/hook-weight": "0"
-  # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
   name: ""
 
 # Конфигурация базы данных - пароль
-# да секреты должны поставляться отдельно, но сейчас наверное пойдет.
 database:
   createSecret: true
   secretName: db-secret
   passwordKey: password
-  password: "your_secure_password_here"
   hikari:
     pool:
       maxSize: 10
@@ -84,14 +77,15 @@ database:
   # Настройки миграции
   migration:
     enabled: true
-    restartPolicy: Never # Не перезапускать миграции #OnFailure
-    waitForPostgres: true # Ждать готовности PostgreSQL
-    timeout: 300 # Таймаут ожидания в секундах
-    backoffLimit: 0 # Количество попыток рестарта
-    ttlSecondsAfterFinished: 120 # Автоудаление Job через 2 минуту
-    gracePeriod: 30 # Время на graceful shutdown
-    debug: false # Включить debug логирование
-    useConfigMap: true # Использовать конфигурацию из ConfigMap
+    restartPolicy: Never # не перезапускать #OnFailure
+    waitForPostgres: true # ждать postgre
+    timeout: 300 # ожидание в секундах
+    backoffLimit: 0 # количество попыток рестарта
+    ttlSecondsAfterFinished: 120 # автоудаление Job через 2 минуту
+    gracePeriod: 30
+    debug: false # включить debug логи
+    useConfigMap: true # использовать ConfigMap
+    changeVersion: "27-01-changelog"  # версия миграции
 
 postgresql:
   enabled: true
@@ -112,9 +106,3 @@ postgresql:
       size: 2Gi
       storageClass: "standard"
   architecture: "standalone"
-  ## Переменные окружения для users-service
-  #env:
-  #  DATASOURCE_URL: "jdbc:postgresql://postgres-postgresql:5432/usersdb"
-  #  DATASOURCE_USERNAME: "app_user"
-  #  DATASOURCE_PASSWORD: "app_password"
-  #  SPRING_PROFILES_ACTIVE: "kubernetes"

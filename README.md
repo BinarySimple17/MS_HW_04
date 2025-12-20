@@ -30,6 +30,10 @@ helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx/
 helm repo update
 helm install nginx ingress-nginx/ingress-nginx -f k8s/nginx-ingress.yaml -n ng --create-namespace
 ```
+"Внешняя" поставка секретов
+```
+kubectl apply -f k8s/manifests/01-secret.yaml
+```
 
 Установка приложения
 ```

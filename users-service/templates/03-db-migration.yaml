@@ -8,13 +8,13 @@ metadata:
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-    component: migration
+    component: migration  
+#    {{- if .Values.database.migration.waitForPostgres }}
   annotations:
-      {{- if .Values.database.migration.waitForPostgres }}
-#      "helm.sh/hook": pre-install,pre-upgrade
-#      "helm.sh/hook-weight": "10"
-#      "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
-      {{- end }}
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-weight": "-5"
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+#    {{- end }}
 spec:
   backoffLimit: {{ .Values.database.migration.backoffLimit }}
   ttlSecondsAfterFinished: {{ .Values.database.migration.ttlSecondsAfterFinished | default 86400 }}
@@ -25,6 +25,7 @@ spec:
         release: {{ .Release.Name }}
         job: db-migrate
     spec:
+      {{- if .Values.database.migration.waitForPostgres }}
 #      serviceAccountName: {{ .Release.Name }}-deps-checker  # ServiceAccount
       initContainers:
         - name: wait-for-postgres
@@ -34,11 +35,12 @@ spec:
             - -c
             - |
               echo "Checking PostgreSQL availability..."
-              until pg_isready -h {{ .Release.Name }}-postgresql -p 5432 -U app_user -d usersdb -t 30; do
+              until pg_isready -h {{ .Release.Name }}-postgresql -p 5432 -U {{ .Values.postgresql.auth.username }} -d {{ .Values.postgresql.auth.database }} -t 30; do
                 echo "PostgreSQL not ready, waiting..."
                 sleep 2
               done
               echo "PostgreSQL is ready"
+      {{- end }}
       restartPolicy: {{ .Values.database.migration.restartPolicy }}
       containers:
         - name: db-migrate
@@ -72,6 +74,9 @@ spec:
             - name: config-volume
               mountPath: /application/config
               readOnly: true
+            - name: db-secret
+              mountPath: /etc/secrets
+              readOnly: true
       volumes:
         - name: config-volume
           configMap:
@@ -79,5 +84,8 @@ spec:
             items:
               - key: application-job.yaml
                 path: application-job.yaml
+        - name: db-secret
+          secret:
+            secretName: {{ .Values.database.secretName }}
       terminationGracePeriodSeconds: {{ .Values.database.migration.gracePeriod | default 30 }}
 {{- end }}
