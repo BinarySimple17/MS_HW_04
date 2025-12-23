@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import ru.binarysimple.users.dto.CreateUserDto;
 import ru.binarysimple.users.dto.UserDto;
 import ru.binarysimple.users.service.UserService;
 
@@ -24,8 +25,8 @@ public class UserController {
 //        return new PagedModel<>(userDtos);
 //    }
 
-    @GetMapping("/{id}")
-    public UserDto getOne(@PathVariable Long id) {
+    @GetMapping(params = {"id"})
+    public UserDto getOne(@RequestParam Long id) {
         return userService.getOne(id);
     }
 
@@ -35,12 +36,12 @@ public class UserController {
 //    }
 
     @PostMapping
-    public UserDto create(@RequestBody @Valid UserDto dto) {
+    public UserDto create(@RequestBody @Valid CreateUserDto dto) {
         return userService.create(dto);
     }
 
-    @PutMapping("/{id}")
-    public UserDto put(@PathVariable Long id, @RequestBody JsonNode patchNode) throws IOException {
+    @PutMapping(params = {"id"})
+    public UserDto put(@RequestParam Long id, @RequestBody JsonNode patchNode) throws IOException {
         return userService.patch(id, patchNode);
     }
 
@@ -49,8 +50,8 @@ public class UserController {
 //        return userService.patchMany(ids, patchNode);
 //    }
 
-    @DeleteMapping("/{id}")
-    public UserDto delete(@PathVariable Long id) {
+    @DeleteMapping(params = {"id"})
+    public UserDto delete(@RequestParam Long id) {
         return userService.delete(id);
     }
 

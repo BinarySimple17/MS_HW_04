@@ -16,7 +16,6 @@ spring:
       ddl-auto: validate
     properties:
       hibernate:
-#        dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
         jdbc:
           lob:
@@ -24,22 +23,20 @@ spring:
     show-sql: false
 
   liquibase:
-    change-log: classpath:db/changelog/db.changelog-master.yaml
-    enabled: true
+#    change-log: classpath:db/changelog/db.changelog-master.yaml
+    enabled: false
 
 server:
   port: 8080
-#  servlet:
-#    context-path: /api/v1
 
 logging:
   level:
     ru.binarysimple: INFO
     org.hibernate.SQL: DEBUG
     org.hibernate.orm.jdbc.bind: TRACE
-    org.springframework.web: DEBUG
-    org.springdoc: DEBUG
-    io.swagger: DEBUG
+#    org.springframework.web: DEBUG
+#    org.springdoc: DEBUG
+#    io.swagger: DEBUG
 
 management:
   endpoints:
@@ -53,16 +50,3 @@ management:
 info:
   app:
     name: "Users Service"
-
-springdoc:
-  api-docs:
-    path: /v3/api-docs
-  swagger-ui:
-    path: /swagger-ui.html
-  info:
-    title: Users Service API
-    description: REST API for managing users
-    version: 1.0.0
-    contact:
-      name: Support Team
-      email: support@example.com

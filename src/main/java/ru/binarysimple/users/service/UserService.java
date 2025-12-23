@@ -2,6 +2,7 @@ package ru.binarysimple.users.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import ru.binarysimple.users.dto.CreateUserDto;
 import ru.binarysimple.users.dto.UserDto;
 import ru.binarysimple.users.filter.UserFilter;
 import java.io.IOException;
@@ -28,7 +29,7 @@ public interface UserService {
     /**
      * Создать нового пользователя.
      */
-    UserDto create(UserDto dto);
+    UserDto create(CreateUserDto dto);
 
     /**
      * Частично обновить пользователя по ID (патч).

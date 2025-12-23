@@ -9,7 +9,7 @@ springBoot {
 }
 
 group = "ru.binarysimple"
-version = "0.0.2-SNAPSHOT"
+version = "0.0.3-SNAPSHOT"
 description = "Users service"
 
 java {
